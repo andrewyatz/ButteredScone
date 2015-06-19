@@ -16,22 +16,42 @@ limitations under the License.
 
 =cut
 
-package Model::Log;
+package Writer;
+
 use Moose;
 use namespace::autoclean;
-use POSIX qw/strftime/;
+with 'File';
 
-has 'ip'                => ( isa => 'Str', is => 'ro', required => 1);
-has 'timestamp'         => ( isa => 'Int', is => 'ro', required => 1); # expected to be an epoch in seconds
-has 'bytes'             => ( isa => 'Int', is => 'ro', required => 1);
-has 'code'              => ( isa => 'Int', is => 'ro', required => 1);
-has 'user_agent'        => ( isa => 'Str', is => 'ro', required => 1);
-has 'url'               => ( isa => 'Str', is => 'ro', required => 1);
-has 'method'            => ( isa => 'Str', is => 'ro', required => 1);
-has 'string_timestamp'  => ( isa => 'Str', is => 'ro', lazy => 1, default => sub {
+has 'log_stack' => ( isa => 'ArrayRef', is => 'ro', default => sub { [] });
+has 'flush_rate'  => ( isa => 'Int', is => 'ro', default => 50000 );
+has '+mode' => ( default => '>' ); # open file handles for writing to
+
+sub log {
+  my ($self, $log) = @_;
+  my $stack = $self->log_stack();
+  push(@{$stack}, $log);
+  if(scalar(@{$stack}) >= $self->flush_rate()) {
+    $self->flush();
+  }
+  return;
+}
+
+sub flush {
   my ($self) = @_;
-  return strftime("%Y-%m-%dT%H:%M:%S",localtime($self->timestamp()));
-});
+  $self->write_entries();
+  @{$self->log_stack()} = ();
+  return;
+}
+
+sub write_entries {
+  ...
+}
+
+before 'issue_close' => sub {
+  my ($self) = @_;
+  $self->write_entries(); # send the last ones out
+  return;
+};
 
 __PACKAGE__->meta->make_immutable;
 

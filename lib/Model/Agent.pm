@@ -16,22 +16,21 @@ limitations under the License.
 
 =cut
 
-package Model::Log;
+package Model::Agent;
 use Moose;
 use namespace::autoclean;
-use POSIX qw/strftime/;
 
-has 'ip'                => ( isa => 'Str', is => 'ro', required => 1);
-has 'timestamp'         => ( isa => 'Int', is => 'ro', required => 1); # expected to be an epoch in seconds
-has 'bytes'             => ( isa => 'Int', is => 'ro', required => 1);
-has 'code'              => ( isa => 'Int', is => 'ro', required => 1);
-has 'user_agent'        => ( isa => 'Str', is => 'ro', required => 1);
-has 'url'               => ( isa => 'Str', is => 'ro', required => 1);
-has 'method'            => ( isa => 'Str', is => 'ro', required => 1);
-has 'string_timestamp'  => ( isa => 'Str', is => 'ro', lazy => 1, default => sub {
+with 'Model::Dimension';
+has '+data' => (default => sub {
   my ($self) = @_;
-  return strftime("%Y-%m-%dT%H:%M:%S",localtime($self->timestamp()));
+  #manually filled in afterwards so we don't represent all keys
+  return { user_agent => $self->log()->user_agent(), bot => 0 };
 });
+
+sub generate_key {
+  my ($self, $data) = @_;
+  return $data->{user_agent};
+}
 
 __PACKAGE__->meta->make_immutable;
 
