@@ -7,6 +7,7 @@ extends 'Parser';
 use Apache::Log::Parser;
 use Model::Log;
 use Date::Parse qw/str2time/;
+use Scalar::Util qw/looks_like_number/;
 
 has 'parser' => ( isa => 'Apache::Log::Parser', is => 'ro', default => sub {
   my ($self) = @_;
@@ -22,6 +23,7 @@ sub process {
     my $r = $p->parse($line);
     next unless defined $r;
     $r->{timestamp} = str2time($r->{datetime});
+    $r->{status} = 0 if ! looks_like_number($r->{status});
     my $log = Model::Log->new(
       ip => $r->{rhost}, 
       timestamp => $r->{timestamp},
