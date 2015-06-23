@@ -1,0 +1,29 @@
+<schema name="" database="" xmlns="http://sqlfairy.sourceforge.net/sqlfairy.xml">
+  <extra />
+  <tables>  
+    <!-- the fact table -->
+    <table name="log" order="1">
+      <extra />
+      <fields>
+        <field name="log_id" data_type="int" size="10" is_nullable="0" is_auto_increment="1" is_primary_key="1" is_foreign_key="0" order="1"/>
+        <field name="ip" data_type="varchar" size="40" is_nullable="0" order="2"/>
+        <field name="event" data_type="datetime" size="10" is_nullable="0" order="3"/>
+        <field name="bytes" data_type="int" size="10" is_nullable="0" order="4"/>
+        <field name="code" data_type="int" size="10" is_nullable="0" order="5"/>
+        <field name="user_agent" data_type="varchar" size="1024" is_nullable="0" order="6"/>
+        <field name="url" data_type="varchar" size="1024" is_nullable="0" order="7"/>
+        <field name="method" data_type="varchar" size="10" is_nullable="0" order="8"/>
+        <!-- Start of the dimensions -->
+        <field name='success' data_type="int" size="1" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="9"/>
+        <field name='year' data_type="int" size="4" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="10"/>
+        <field name='month' data_type="int" size="2" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="11"/>
+        <field name='day' data_type="int" size="10" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="12"/>
+        <field name='quarter' data_type="int" size="1" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="13"/>
+      </fields>
+      <constraints>
+        <constraint type="PRIMARY_KEY" fields="log_id" deferrable="1"/>
+        <constraint name="log_idx" type="UNIQUE" fields="event,ip,url,method"/>
+      </constraints>
+    </table>
+  </tables>
+</schema>

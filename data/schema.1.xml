@@ -8,6 +8,7 @@
         <field name='year' data_type="int" size="4" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="2"/>
         <field name='month' data_type="int" size="2" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="3"/>
         <field name='day' data_type="int" size="10" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="4"/>
+        <field name='quarter' data_type="int" size="1" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="5"/>
       </fields>
       <constraints>
         <constraint name="" type="PRIMARY_KEY" fields="event_dimension_id" deferrable="1"/>
@@ -16,21 +17,22 @@
         <index name="ed_year" type="NORMAL" fields="year"/>
         <index name="ed_month" type="NORMAL" fields="month"/>
         <index name="ed_day" type="NORMAL" fields="day"/>
+        <index name="ed_quarter" type="NORMAL" fields="quarter"/>
       </indices>
     </table>
-    
+
     <table name="status_dimension" order="1">
       <fields>
         <field name='status_dimension_id' data_type="int" size="10" is_auto_increment="1" is_primary_key="1" is_nullable="0" order="1"/>
         <field name='code' data_type="int" size="3" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="2"/>
-        <field name='error' data_type="int" size="1" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="3"/>
+        <field name='success' data_type="int" size="1" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="3"/>
         <field name='description' data_type="varchar" size="1024" is_auto_increment="0" is_primary_key="0" is_nullable="0" order="3"/>
       </fields>
       <constraints>
         <constraint type="PRIMARY_KEY" fields="status_dimension_id" deferrable="1"/>
       </constraints>
       <indices>
-        <index name="sd_error" type="NORMAL" fields="error"/>
+        <index name="sd_success" type="NORMAL" fields="success"/>
       </indices>
     </table>
     
@@ -74,18 +76,16 @@
         <field name="log_id" data_type="int" size="10" is_nullable="0" is_auto_increment="1" is_primary_key="1" is_foreign_key="0" order="1"/>
         <field name="ip" data_type="varchar" size="40" is_nullable="0" order="2"/>
         <field name="event" data_type="datetime" size="10" is_nullable="0" order="3"/>
-        <field name="time_taken" data_type="int" size="10" is_nullable="0" order="4"/>
-        <field name="bytes" data_type="int" size="10" is_nullable="0" order="5"/>
-        <field name="code" data_type="int" size="10" is_nullable="0" order="6"/>
-        <field name="user_agent" data_type="varchar" size="1024" is_nullable="0" order="7"/>
-        <field name="url" data_type="varchar" size="1024" is_nullable="0" order="8"/>
-        <field name="params" data_type="varchar" size="1024" is_nullable="0" order="9"/>
-        <field name="method" data_type="varchar" size="10" is_nullable="0" order="10"/>
+        <field name="bytes" data_type="int" size="10" is_nullable="0" order="4"/>
+        <field name="code" data_type="int" size="10" is_nullable="0" order="5"/>
+        <field name="user_agent" data_type="varchar" size="1024" is_nullable="0" order="6"/>
+        <field name="url" data_type="varchar" size="1024" is_nullable="0" order="7"/>
+        <field name="method" data_type="varchar" size="10" is_nullable="0" order="8"/>
         <!-- Start of the indexes -->
-        <field name='event_dimension_id' data_type="int" size="10" is_nullable="0" order="11"/>
-        <field name='status_dimension_id' data_type="int" size="10" is_nullable="0" order="12"/>
-        <field name='user_agent_dimension_id' data_type="int" size="10" is_nullable="0" order="13"/>
-        <field name='url_dimension_id' data_type="int" size="10" is_nullable="0" order="14"/>
+        <field name='event_dimension_id' data_type="int" size="10" is_nullable="0" order="9"/>
+        <field name='status_dimension_id' data_type="int" size="10" is_nullable="0" order="10"/>
+        <field name='user_agent_dimension_id' data_type="int" size="10" is_nullable="0" order="11"/>
+        <field name='url_dimension_id' data_type="int" size="10" is_nullable="0" order="12"/>
       </fields>
       <constraints>
         <constraint type="PRIMARY_KEY" fields="log_id" deferrable="1"/>
