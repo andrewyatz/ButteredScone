@@ -29,3 +29,4 @@ requires 'Scalar::Util';
 requires 'Amazon::S3';
 requires 'Path::Iterator::Rule';
 requires 'JSON::XS';
+requires 'Types::Serialiser';

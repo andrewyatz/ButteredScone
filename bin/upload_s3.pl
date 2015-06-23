@@ -25,7 +25,7 @@ use Term::ReadKey;
 use Path::Iterator::Rule;
 use Amazon::S3;
 use JSON::XS qw/encode_json/;
-use JSON::PP qw//;
+use Types::Serialiser;
 use Text::CSV;
 use File::Spec;
 use feature qw/say/;
@@ -65,7 +65,7 @@ while ( my $file = $it->() ) {
     'content_type' => 'text/plain',
     'x-amz-storage-class' => 'REDUCED_REDUNDANCY'
   });
-  push(@entries, { url => "s3://${bucket_name}/$name", mandatory => $JSON::PP::true});
+  push(@entries, { url => "s3://${bucket_name}/$name", mandatory => $Types::Serialiser::true});
 }
 
 # Send the manifest
