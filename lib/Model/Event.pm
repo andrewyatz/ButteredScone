@@ -19,6 +19,7 @@ limitations under the License.
 package Model::Event;
 use Moose;
 use namespace::autoclean;
+use POSIX qw/ceil/;
 
 with 'Model::Dimension';
 has '+data' => (default => sub {
@@ -26,7 +27,7 @@ has '+data' => (default => sub {
   my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime($self->log()->timestamp());
   $year += 1900;
   $month++;
-  my $quarter = (int($month/3)+1);
+  my $quarter = ceil($month/3);
   return { year => $year, month => $month, day => $mday, quarter => $quarter };
 });
 
