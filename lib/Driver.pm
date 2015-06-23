@@ -88,9 +88,9 @@ sub insert_dimension {
   my ($sql, $bind_params) = $self->_generate_insert($table, $data, $insert_ignore);
   my $res = $self->dbh->query($sql, @{$bind_params});
   if($res->rows() > 0) {
-    return $self->dbh->last_insert_id(undef, undef, $table);
+    return $self->dbh->last_insert_id(undef, undef, $§);
   }
-  return;
+  return -1;
 }
 
 sub _generate_insert {

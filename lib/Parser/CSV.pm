@@ -1,4 +1,3 @@
-package Parser::Apache;
 #!/usr/bin/env perl
 
 =head1 LICENSE
@@ -19,18 +18,19 @@ limitations under the License.
 
 =cut
 
+package Parser::CSV;
+
 use Moose;
 use namespace::autoclean;
 extends 'Parser';
 
-use Apache::Log::Parser;
 use Model::Log;
+use Text::CSV;
 use Date::Parse qw/str2time/;
-use Scalar::Util qw/looks_like_number/;§
 
-has 'parser' => ( isa => 'Apache::Log::Parser', is => 'ro', default => sub {
-  my ($self) = @_;
-  return Apache::Log::Parser->new(fast => 1);
+has 'parser' => ( isa => 'Text::CSV', is => 'ro', default => sub {
+  my $csv = Text::CSV->new ( { binary => 1, eol => $/ } ) or die "Cannot use CSV: ".Text::CSV->error_diag();
+  return $csv;
 });
 
 sub process {
@@ -41,20 +41,25 @@ sub process {
   while(my $line = <$fh>) {
     my $r = $p->parse($line);
     next unless defined $r;
-    $r->{timestamp} = str2time($r->{datetime});
-    $r->{status} = 0 if ! looks_like_number($r->{status});
-    my $log = Model::Log->new(
-      ip => $r->{rhost}, 
-      timestamp => $r->{timestamp},
-      bytes => $r->{bytes}, 
-      code => $r->{status}, 
-      user_agent => $r->{agent}, 
-      url => $r->{path}, 
-      method => $r->{method}
-    );
+    my $fields = [$p->fields()];
+    my $log = $self->array_to_log($fields);
     $w->log($log);
   }
   return;
+}
+
+sub array_to_log {
+  my ($self, $array) = @_;
+  my $log = Model::Log->new(
+    ip => $array->[0],
+    timestamp => str2time($array->[1]),
+    bytes => $array->[2],
+    code => $array->[3],
+    user_agent => $array->[4],
+    url => $array->[5],
+    method => $array->[6],
+  );
+  return $log;
 }
 
 __PACKAGE__->meta->make_immutable;

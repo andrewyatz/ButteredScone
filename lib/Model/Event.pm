@@ -21,10 +21,13 @@ use Moose;
 use namespace::autoclean;
 
 with 'Model::Dimension';
-has '+data' => (default => default => sub {
-  my ($self) = @_; 
-  my $dt = $self->log()->date();
-  return { year => $dt->year(), month => $dt->month(), day => $dt->day() };
+has '+data' => (default => sub {
+  my ($self) = @_;
+  my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime($self->log()->timestamp());
+  $year += 1900;
+  $month++;
+  my $quarter = (int($month/3)+1);
+  return { year => $year, month => $month, day => $mday, quarter => $quarter };
 });
 
 sub generate_key {

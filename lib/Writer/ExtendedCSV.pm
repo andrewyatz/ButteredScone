@@ -16,25 +16,32 @@ limitations under the License.
 
 =cut
 
-package Model::Status;
-use Moose;
-use namespace::autoclean;
-use HTTP::Status qw/status_message is_error/;
+package Writer::ExtendedCSV;
 
-with 'Model::Dimension';
-has '+data' => (default => sub {
-  my ($self) = @_; 
-  my $c = $self->log()->code();
-  my $success = is_error($c) ? 0 : 1;
-  return { code => $c, success => $success, description => status_message($c) };
-});
-has '+key' => ( default => sub {
-  my ($self) = @_; 
-  return ''.$self->log()->code(); # generating data is expensive so don't do it just set the code
-});
-sub generate_key {
-  my ($class, $data) = @_;
-  return $data->{code};
+use Moose;
+use Model::Event;
+use Model::Status;
+
+extends 'Writer::CSV';
+
+sub to_cols {
+  my ($self, $log) = @_;
+  my $status = Model::Status->new(log => $log);
+  my $event = Model::Event->new(log => $log);
+  return [
+    $log->ip(),
+    $log->string_timestamp(),
+    $log->bytes(),
+    $log->code(),
+    $log->user_agent(),
+    $log->url(),
+    $log->method(),
+    $status->data->{success},
+    $event->data->{year},
+    $event->data->{month},
+    $event->data->{day},
+    $event->data->{quarter}
+  ];
 }
 
 __PACKAGE__->meta->make_immutable;
