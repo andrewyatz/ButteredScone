@@ -24,7 +24,8 @@ use warnings;
 use Term::ReadKey;
 use Path::Iterator::Rule;
 use Amazon::S3;
-use JSON::XS;
+use JSON::XS qw/encode_json/;
+use JSON::PP qw//;
 use Text::CSV;
 use File::Spec;
 use feature qw/say/;
@@ -64,13 +65,13 @@ while ( my $file = $it->() ) {
     'content_type' => 'text/plain',
     'x-amz-storage-class' => 'REDUCED_REDUNDANCY'
   });
-  push(@entries, $name);
+  push(@entries, { url => "s3://${bucket_name}/$name", mandatory => $JSON::PP::true});
 }
 
 # Send the manifest
 say "Uploading manifest file";
 my $manifest = { entries => \@entries };
-my $json = encode_json($manifest);
+my $json = encode_json($manifest)."\n";
 $bucket->add_key('manifest.json', $json, {
   'content_type' => 'application/json',
   'x-amz-storage-class' => 'REDUCED_REDUNDANCY'
