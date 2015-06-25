@@ -34,7 +34,8 @@ has 'parser' => ( isa => 'Text::CSV', is => 'ro', default => sub {
 });
 
 sub process {
-  my ($self) = @_;
+  my ($self, $callback) = @_;
+  confess('No callback given') unless $callback;
   my $fh = $self->handle();
   my $p = $self->parser();
   my $w = $self->writer();
@@ -43,7 +44,7 @@ sub process {
     next unless defined $r;
     my $fields = [$p->fields()];
     my $log = $self->array_to_log($fields);
-    $w->log($log);
+    $callback->($log);
   }
   return;
 }

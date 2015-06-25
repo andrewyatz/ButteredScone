@@ -46,6 +46,7 @@ BEGIN {
 
 use Parser::Apache;
 use Writer::CSV;
+use Processor::Basic;
 use PerlIO::gzip;
 
 my ($input, $output) = @ARGV;
@@ -56,8 +57,9 @@ if($input =~ /\.gz$/) {
 }
 
 my $writer = Writer::CSV->new(file => $output);
-my $parser = Parser::Apache->new(file => $input, mode => $read_mode, writer => $writer);
-$parser->process();
+my $parser = Parser::Apache->new(file => $input, mode => $read_mode);
+my $processor = Processor::Basic->new(parser => $parser, $writer => $writer);
+$processor->process();
 $writer->issue_close();
 $parser->issue_close();
 print "Done!\n";

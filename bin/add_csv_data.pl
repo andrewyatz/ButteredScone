@@ -50,8 +50,9 @@ use Writer::ExtendedCSV;
 my ($input, $output) = @ARGV;
 
 my $writer = Writer::ExtendedCSV->new(file => $output);
-my $parser = Parser::CSV->new(file => $input, writer => $writer);
-$parser->process();
+my $parser = Parser::CSV->new(file => $input);
+my $processor = Processor::Basic->new(parser => $parser, $writer => $writer);
+$processor->process();
 $writer->issue_close();
 $parser->issue_close();
 print "Done!\n";

@@ -26,7 +26,8 @@ extends 'Parser';
 use Apache::Log::Parser;
 use Model::Log;
 use Date::Parse qw/str2time/;
-use Scalar::Util qw/looks_like_number/;§
+use Scalar::Util qw/looks_like_number/;
+use Carp;
 
 has 'parser' => ( isa => 'Apache::Log::Parser', is => 'ro', default => sub {
   my ($self) = @_;
@@ -34,10 +35,10 @@ has 'parser' => ( isa => 'Apache::Log::Parser', is => 'ro', default => sub {
 });
 
 sub process {
-  my ($self) = @_;
+  my ($self, $callback) = @_;
+  confess('No callback given') unless $callback;
   my $fh = $self->handle();
   my $p = $self->parser();
-  my $w = $self->writer();
   while(my $line = <$fh>) {
     my $r = $p->parse($line);
     next unless defined $r;
@@ -52,7 +53,7 @@ sub process {
       url => $r->{path}, 
       method => $r->{method}
     );
-    $w->log($log);
+    $callback->($log);
   }
   return;
 }

@@ -16,14 +16,15 @@ limitations under the License.
 
 =cut
 
-package Parser;
+package Processor;
 
 use Moose;
 use namespace::autoclean;
-with 'File';
+
+has 'parser' => ( isa => 'Parser', is => 'ro', required => 1);
+has 'writer'  => ( isa => 'Writer', is => 'ro', required => 1);
 
 sub process {
-  #my ($self, $callaback) = @_;
   ...
 }
 

@@ -30,3 +30,4 @@ requires 'Amazon::S3';
 requires 'Path::Iterator::Rule';
 requires 'JSON::XS';
 requires 'Types::Serialiser';
+requires 'Digest::HMAC_SHA1';

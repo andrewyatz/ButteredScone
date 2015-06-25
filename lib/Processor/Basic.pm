@@ -16,15 +16,19 @@ limitations under the License.
 
 =cut
 
-package Parser;
+package Processor::Basic;
 
 use Moose;
-use namespace::autoclean;
-with 'File';
+
+extends 'Processor';
 
 sub process {
-  #my ($self, $callaback) = @_;
-  ...
+  my ($self) = @_;
+  my $writer = $self->writer();
+  $self->parser()->process(sub {
+    my ($log) = @_;
+    $writer->log($log);
+  });
 }
 
 __PACKAGE__->meta->make_immutable;

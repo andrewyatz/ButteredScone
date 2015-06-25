@@ -55,14 +55,15 @@ my $bucket = $s3->bucket($bucket_name);
 
 # Find files and upload
 my $rule = Path::Iterator::Rule->new;
-$rule->name(q{*.csv.ext});
+$rule->name(q{*.csv.ext*});
 my $it = $rule->iter($directory);
 my @entries;
 while ( my $file = $it->() ) {
   my ($volume,$directories,$name) = File::Spec->splitpath($file);
-  say "Uploading $name to S3 bucket $bucket_name\n";
+  say "Uploading $name to S3 bucket $bucket_name";
+  my $content_type = ($name =~ /\.gz/) ? 'application/x-gzip' : 'text/plain';
   $bucket->add_key_filename($name, $file, {
-    'content_type' => 'text/plain',
+    'content_type' => $content_type,
     'x-amz-storage-class' => 'REDUCED_REDUNDANCY'
   });
   push(@entries, { url => "s3://${bucket_name}/$name", mandatory => $Types::Serialiser::true});
