@@ -16,32 +16,20 @@ limitations under the License.
 
 =cut
 
-package Writer::ExtendedCSV;
+package Processor::Dimensions;
 
 use Moose;
-use Model::Event;
-use Model::Status;
+extends 'Processor';
 
-extends 'Writer::CSV';
+has '' => ( isa => '', is => 'ro', required => 1 );
 
-sub to_cols {
-  my ($self, $log) = @_;
-  my $status = $log->status();
-  my $event = $log->event();
-  return [
-    $log->ip(),
-    $log->string_timestamp(),
-    $log->bytes(),
-    $log->code(),
-    $log->user_agent(),
-    $log->url(),
-    $log->method(),
-    $status->data->{success},
-    $event->data->{year},
-    $event->data->{month},
-    $event->data->{day},
-    $event->data->{quarter}
-  ];
+sub process {
+  my ($self) = @_;
+  my $writer = $self->writer();
+  $self->parser()->process(sub {
+    my ($log) = @_;
+    $writer->log($log);
+  });
 }
 
 __PACKAGE__->meta->make_immutable;

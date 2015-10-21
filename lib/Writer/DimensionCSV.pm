@@ -16,7 +16,7 @@ limitations under the License.
 
 =cut
 
-package Writer::ExtendedCSV;
+package Writer::DimensionCSV;
 
 use Moose;
 use Model::Event;
@@ -24,25 +24,18 @@ use Model::Status;
 
 extends 'Writer::CSV';
 
-sub to_cols {
+has 'dimension_handler' => ( isa => '', is => 'ro', required => 1 );
+
+override 'to_cols' => sub {
   my ($self, $log) = @_;
-  my $status = $log->status();
-  my $event = $log->event();
-  return [
-    $log->ip(),
-    $log->string_timestamp(),
-    $log->bytes(),
-    $log->code(),
-    $log->user_agent(),
-    $log->url(),
-    $log->method(),
-    $status->data->{success},
-    $event->data->{year},
-    $event->data->{month},
-    $event->data->{day},
-    $event->data->{quarter}
-  ];
-}
+  my $cols = super();
+  push(@{$cols}, 
+    #event_dimension_id
+    #status_dimension_id
+    #user_agent_dimension_id
+  );
+  return $cols;
+};
 
 __PACKAGE__->meta->make_immutable;
 

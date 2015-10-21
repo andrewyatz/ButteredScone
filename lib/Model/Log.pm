@@ -21,6 +21,10 @@ use Moose;
 use namespace::autoclean;
 use POSIX qw/strftime/;
 
+use Model::Event;
+use Model::Status;
+use Model::Agent;
+
 has 'ip'                => ( isa => 'Str', is => 'ro', required => 1);
 has 'timestamp'         => ( isa => 'Int', is => 'ro', required => 1); # expected to be an epoch in seconds
 has 'bytes'             => ( isa => 'Int', is => 'ro', required => 1);
@@ -31,6 +35,22 @@ has 'method'            => ( isa => 'Str', is => 'ro', required => 1);
 has 'string_timestamp'  => ( isa => 'Str', is => 'ro', lazy => 1, default => sub {
   my ($self) = @_;
   return strftime("%Y-%m-%dT%H:%M:%S",localtime($self->timestamp()));
+});
+
+# Start of the dimensions
+has 'event' => ( isa => 'Model::Event', is => 'ro', lazy => 1, default => sub {
+  my ($self) = @_;
+  return Model::Event->new(log => $self);
+});
+
+has 'status' => ( isa => 'Model::Status', is => 'ro', lazy => 1, default => sub {
+  my ($self) = @_;
+  return Model::Status->new(log => $self);
+});
+
+has 'agent' => ( isa => 'Model::Agent', is => 'ro', lazy => 1, default => sub {
+  my ($self) = @_;
+  return Model::Agent->new(log => $self);
 });
 
 __PACKAGE__->meta->make_immutable;

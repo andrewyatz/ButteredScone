@@ -16,27 +16,17 @@ limitations under the License.
 
 =cut
 
-package Writer::ExtendedCSV;
+package Writer::CSV::Event;
 
 use Moose;
-use Model::Event;
-use Model::Status;
-
 extends 'Writer::CSV';
 
 sub to_cols {
   my ($self, $log) = @_;
-  my $status = $log->status();
   my $event = $log->event();
+  # id, year, month, day, quarter
   return [
-    $log->ip(),
-    $log->string_timestamp(),
-    $log->bytes(),
-    $log->code(),
-    $log->user_agent(),
-    $log->url(),
-    $log->method(),
-    $status->data->{success},
+    # id,
     $event->data->{year},
     $event->data->{month},
     $event->data->{day},

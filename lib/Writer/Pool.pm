@@ -18,6 +18,8 @@ limitations under the License.
 
 package Writer::Pool;
 
+# Exists only to collect logs. Outputs to nowhere.
+
 use Moose;
 extends 'Writer';
 
