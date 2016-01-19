@@ -50,7 +50,7 @@ my $s3 = Amazon::S3->new({
   retry => 0,
   timeout => 5,
 });
-my $bucket = $s3->bucket($bucket_name); 
+my $bucket = $s3->add_bucket({ bucket => $bucket_name }); 
 # use Data::Dumper; warn Dumper ($s3->buckets()); die;
 
 # Find files and upload
